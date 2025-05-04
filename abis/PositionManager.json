@@ -2,8 +2,13 @@
   {
     "inputs": [
       {
-        "internalType": "contract IPoolManager",
-        "name": "_poolManager",
+        "internalType": "contract IVault",
+        "name": "_vault",
+        "type": "address"
+      },
+      {
+        "internalType": "contract ICLPoolManager",
+        "name": "_clPoolManager",
         "type": "address"
       },
       {
@@ -15,6 +20,16 @@
         "internalType": "uint256",
         "name": "_unsubscribeGasLimit",
         "type": "uint256"
+      },
+      {
+        "internalType": "contract ICLPositionDescriptor",
+        "name": "_tokenDescriptor",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IWETH9",
+        "name": "_weth9",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -34,6 +49,22 @@
       }
     ],
     "name": "AlreadySubscribed",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "reason",
+        "type": "bytes"
+      }
+    ],
+    "name": "BurnNotificationReverted",
     "type": "error"
   },
   {
@@ -86,7 +117,17 @@
   },
   {
     "inputs": [],
+    "name": "InsufficientBalance",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "InvalidContractSignature",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidEthSender",
     "type": "error"
   },
   {
@@ -102,6 +143,22 @@
   {
     "inputs": [],
     "name": "InvalidSigner",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "int24",
+        "name": "tick",
+        "type": "int24"
+      }
+    ],
+    "name": "InvalidTick",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "InvalidTokenID",
     "type": "error"
   },
   {
@@ -137,6 +194,22 @@
     "type": "error"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "reason",
+        "type": "bytes"
+      }
+    ],
+    "name": "ModifyLiquidityNotificationReverted",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "NoCodeSubscriber",
     "type": "error"
@@ -164,17 +237,38 @@
   },
   {
     "inputs": [],
-    "name": "NotPoolManager",
-    "type": "error"
-  },
-  {
-    "inputs": [],
     "name": "NotSubscribed",
     "type": "error"
   },
   {
     "inputs": [],
+    "name": "NotVault",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "SafeCastOverflow",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "SignatureDeadlineExpired",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "subscriber",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "reason",
+        "type": "bytes"
+      }
+    ],
+    "name": "SubscriptionReverted",
     "type": "error"
   },
   {
@@ -194,51 +288,8 @@
     "type": "error"
   },
   {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "subscriber",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "reason",
-        "type": "bytes"
-      }
-    ],
-    "name": "Wrap__ModifyLiquidityNotificationReverted",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "subscriber",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "reason",
-        "type": "bytes"
-      }
-    ],
-    "name": "Wrap__SubscriptionReverted",
-    "type": "error"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "address",
-        "name": "subscriber",
-        "type": "address"
-      },
-      {
-        "internalType": "bytes",
-        "name": "reason",
-        "type": "bytes"
-      }
-    ],
-    "name": "Wrap__TransferNotificationReverted",
+    "inputs": [],
+    "name": "VaultMustBeUnlocked",
     "type": "error"
   },
   {
@@ -289,6 +340,44 @@
       }
     ],
     "name": "ApprovalForAll",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "MintPosition",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "int256",
+        "name": "liquidityChange",
+        "type": "int256"
+      },
+      {
+        "indexed": false,
+        "internalType": "BalanceDelta",
+        "name": "feesAccrued",
+        "type": "int256"
+      }
+    ],
+    "name": "ModifyLiquidity",
     "type": "event"
   },
   {
@@ -368,6 +457,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "WETH9",
+    "outputs": [
+      {
+        "internalType": "contract IWETH9",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "address",
@@ -399,6 +501,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "clPoolManager",
+    "outputs": [
+      {
+        "internalType": "contract ICLPoolManager",
+        "name": "",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -446,19 +561,24 @@
             "type": "address"
           },
           {
+            "internalType": "contract IHooks",
+            "name": "hooks",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IPoolManager",
+            "name": "poolManager",
+            "type": "address"
+          },
+          {
             "internalType": "uint24",
             "name": "fee",
             "type": "uint24"
           },
           {
-            "internalType": "int24",
-            "name": "tickSpacing",
-            "type": "int24"
-          },
-          {
-            "internalType": "contract IHooks",
-            "name": "hooks",
-            "type": "address"
+            "internalType": "bytes32",
+            "name": "parameters",
+            "type": "bytes32"
           }
         ],
         "internalType": "struct PoolKey",
@@ -466,7 +586,7 @@
         "type": "tuple"
       },
       {
-        "internalType": "PositionInfo",
+        "internalType": "CLPositionInfo",
         "name": "info",
         "type": "uint256"
       }
@@ -508,19 +628,24 @@
             "type": "address"
           },
           {
+            "internalType": "contract IHooks",
+            "name": "hooks",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IPoolManager",
+            "name": "poolManager",
+            "type": "address"
+          },
+          {
             "internalType": "uint24",
             "name": "fee",
             "type": "uint24"
           },
           {
-            "internalType": "int24",
-            "name": "tickSpacing",
-            "type": "int24"
-          },
-          {
-            "internalType": "contract IHooks",
-            "name": "hooks",
-            "type": "address"
+            "internalType": "bytes32",
+            "name": "parameters",
+            "type": "bytes32"
           }
         ],
         "internalType": "struct PoolKey",
@@ -531,11 +656,6 @@
         "internalType": "uint160",
         "name": "sqrtPriceX96",
         "type": "uint160"
-      },
-      {
-        "internalType": "bytes",
-        "name": "hookData",
-        "type": "bytes"
       }
     ],
     "name": "initializePool",
@@ -577,7 +697,26 @@
     "inputs": [
       {
         "internalType": "bytes",
-        "name": "unlockData",
+        "name": "data",
+        "type": "bytes"
+      }
+    ],
+    "name": "lockAcquired",
+    "outputs": [
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes",
+        "name": "payload",
         "type": "bytes"
       },
       {
@@ -604,7 +743,7 @@
         "type": "bytes[]"
       }
     ],
-    "name": "modifyLiquiditiesWithoutUnlock",
+    "name": "modifyLiquiditiesWithoutLock",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"
@@ -951,32 +1090,24 @@
         "type": "address"
       },
       {
+        "internalType": "contract IHooks",
+        "name": "hooks",
+        "type": "address"
+      },
+      {
+        "internalType": "contract IPoolManager",
+        "name": "poolManager",
+        "type": "address"
+      },
+      {
         "internalType": "uint24",
         "name": "fee",
         "type": "uint24"
       },
       {
-        "internalType": "int24",
-        "name": "tickSpacing",
-        "type": "int24"
-      },
-      {
-        "internalType": "contract IHooks",
-        "name": "hooks",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "poolManager",
-    "outputs": [
-      {
-        "internalType": "contract IPoolManager",
-        "name": "",
-        "type": "address"
+        "internalType": "bytes32",
+        "name": "parameters",
+        "type": "bytes32"
       }
     ],
     "stateMutability": "view",
@@ -993,9 +1124,90 @@
     "name": "positionInfo",
     "outputs": [
       {
-        "internalType": "PositionInfo",
+        "internalType": "CLPositionInfo",
         "name": "info",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "tokenId",
+        "type": "uint256"
+      }
+    ],
+    "name": "positions",
+    "outputs": [
+      {
+        "components": [
+          {
+            "internalType": "Currency",
+            "name": "currency0",
+            "type": "address"
+          },
+          {
+            "internalType": "Currency",
+            "name": "currency1",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IHooks",
+            "name": "hooks",
+            "type": "address"
+          },
+          {
+            "internalType": "contract IPoolManager",
+            "name": "poolManager",
+            "type": "address"
+          },
+          {
+            "internalType": "uint24",
+            "name": "fee",
+            "type": "uint24"
+          },
+          {
+            "internalType": "bytes32",
+            "name": "parameters",
+            "type": "bytes32"
+          }
+        ],
+        "internalType": "struct PoolKey",
+        "name": "poolKey",
+        "type": "tuple"
+      },
+      {
+        "internalType": "int24",
+        "name": "tickLower",
+        "type": "int24"
+      },
+      {
+        "internalType": "int24",
+        "name": "tickUpper",
+        "type": "int24"
+      },
+      {
+        "internalType": "uint128",
+        "name": "liquidity",
+        "type": "uint128"
+      },
+      {
+        "internalType": "uint256",
+        "name": "feeGrowthInside0LastX128",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "feeGrowthInside1LastX128",
+        "type": "uint256"
+      },
+      {
+        "internalType": "contract ICLSubscriber",
+        "name": "_subscriber",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -1117,7 +1329,7 @@
     "name": "subscriber",
     "outputs": [
       {
-        "internalType": "contract ISubscriber",
+        "internalType": "contract ICLSubscriber",
         "name": "subscriber",
         "type": "address"
       }
@@ -1158,10 +1370,23 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "tokenDescriptor",
+    "outputs": [
+      {
+        "internalType": "contract ICLPositionDescriptor",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "",
+        "name": "tokenId",
         "type": "uint256"
       }
     ],
@@ -1173,7 +1398,7 @@
         "type": "string"
       }
     ],
-    "stateMutability": "pure",
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -1202,25 +1427,6 @@
   {
     "inputs": [
       {
-        "internalType": "bytes",
-        "name": "data",
-        "type": "bytes"
-      }
-    ],
-    "name": "unlockCallback",
-    "outputs": [
-      {
-        "internalType": "bytes",
-        "name": "",
-        "type": "bytes"
-      }
-    ],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
         "internalType": "uint256",
         "name": "tokenId",
         "type": "uint256"
@@ -1243,5 +1449,22 @@
     ],
     "stateMutability": "view",
     "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "vault",
+    "outputs": [
+      {
+        "internalType": "contract IVault",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]

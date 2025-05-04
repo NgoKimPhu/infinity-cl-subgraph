@@ -268,9 +268,9 @@ export function getSubgraphConfig(): SubgraphConfig {
     }
   } else if (selectedNetwork == BSC_NETWORK_NAME) {
     return {
-      poolManagerAddress: '0x28e2ea090877bf75740558f6bfb36a5ffee9e9df',
-      stablecoinWrappedNativePoolId: '0x4c9dff5169d88f7fbf5e43fc8e2eb56bf9791785729b9fc8c22064a47af12052', // https://bscscan.com/tx/0x36c1e4c7b4105a0be337addc32b5564dd3494fccfe331bf9fe7c647163d27d05#eventlog
-      stablecoinIsToken0: true,
+      poolManagerAddress: '0xa0FfB9c1CE1Fe56963B0321B32E7A0302114058b',
+      stablecoinWrappedNativePoolId: '0x752e76950f6167b8dbb0495b957d264d61724dfa26e3dd6fad1ba820862ce9cf',
+      stablecoinIsToken0: false,
       wrappedNativeAddress: '0xbb4cdb9cbd36b01bd1cbaebf2de08d9173bc095c', // WBNB
       minimumNativeLocked: BigDecimal.fromString('10'),
       stablecoinAddresses: [

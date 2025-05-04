@@ -8,6 +8,6 @@ export function eventId(transactionHash: Bytes, logIndex: BigInt): string {
   return `${transactionHash.toHexString()}-${logIndex.toString()}`
 }
 
-export function poolKeyId(token0: Address, token1: Address, fee: BigInt, tickSpacing: BigInt, hooks: Address): string {
-  return `${token0.toHexString()}-${token1.toHexString()}-${fee.toString()}-${tickSpacing.toString()}-${hooks.toHexString()}`
+export function poolKeyId(token0: Address, token1: Address, fee: BigInt, parameters: Bytes, hooks: Address): string {
+  return `${token0.toHexString()}-${token1.toHexString()}-${fee.toString()}-${parameters.toHexString()}-${hooks.toHexString()}`
 }
