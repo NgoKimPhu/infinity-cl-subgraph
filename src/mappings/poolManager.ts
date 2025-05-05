@@ -1,4 +1,4 @@
-import { BigInt, log } from '@graphprotocol/graph-ts'
+import { BigInt, Bytes, log } from '@graphprotocol/graph-ts'
 
 import { Initialize as InitializeEvent } from '../types/PoolManager/PoolManager'
 import { PoolManager } from '../types/schema'
@@ -134,6 +134,10 @@ export function handleInitializeHelper(
   pool.feeTier = BigInt.fromI32(event.params.fee)
   pool.hooks = event.params.hooks.toHexString()
   pool.parameters = event.params.parameters
+  pool.hooksRegistration = Bytes.fromUint8Array(pool.parameters.slice(30, 32))
+  const tickSpacingBytes = pool.parameters.slice(27, 30)
+  tickSpacingBytes.reverse()
+  pool.tickSpacing = BigInt.fromByteArray(Bytes.fromUint8Array(tickSpacingBytes))
   pool.createdAtTimestamp = event.block.timestamp
   pool.createdAtBlockNumber = event.block.number
   pool.liquidityProviderCount = ZERO_BI

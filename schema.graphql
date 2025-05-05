@@ -98,6 +98,10 @@ type Pool @entity(immutable: false) {
   tick: BigInt
   # parameters (tick spacing...)
   parameters: Bytes!
+  # hooks registration bitmap
+  hooksRegistration: Bytes!
+  # tick spacing
+  tickSpacing: BigInt!
   # current observation index
   observationIndex: BigInt!
   # all time token0 swapped
